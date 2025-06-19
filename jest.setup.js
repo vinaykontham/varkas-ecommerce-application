@@ -3,11 +3,11 @@ import { TextEncoder, TextDecoder } from 'util'
 
 // Suppress specific console warnings
 const originalError = console.error
-console.error = (...args) => {
-  if (args[0]?.includes('Received `true` for a non-boolean attribute `fill`')) {
+console.error = function() {
+  if (arguments[0]?.includes('Received `true` for a non-boolean attribute `fill`')) {
     return
   }
-  originalError.apply(console, args)
+  originalError.apply(console, arguments)
 }
 
 global.TextEncoder = TextEncoder
@@ -31,8 +31,9 @@ Object.defineProperty(window, 'matchMedia', {
 jest.mock('next/image', () => ({
   __esModule: true,
   default: (props) => {
+    const { fill, ...rest } = props
     // eslint-disable-next-line jsx-a11y/alt-text
-    return <img {...props} />
+    return <img {...rest} />
   },
 }))
 
