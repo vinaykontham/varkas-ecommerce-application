@@ -1,29 +1,28 @@
 function NextImage({ src, alt, fill, ...props }) {
-  // Remove Next.js specific props that shouldn't be passed to img
-  const { sizes, priority, quality, loading, ...rest } = props
-
   // Convert boolean props to strings
-  const safeProps = Object.entries(rest).reduce((acc, [key, value]) => {
+  const safeProps = Object.entries(props).reduce((acc, [key, value]) => {
     acc[key] = value === true ? "true" : value
     return acc
   }, {})
 
+  // Handle fill prop separately
+  const style = fill ? {
+    position: 'absolute',
+    height: '100%',
+    width: '100%',
+    inset: '0px',
+    objectFit: 'cover'
+  } : undefined
+
+  // eslint-disable-next-line @next/next/no-img-element
   return (
-    <div
+    <img
+      src={src}
+      alt={alt}
+      style={style}
+      {...safeProps}
       data-testid="next-image"
-      style={{
-        position: fill ? 'absolute' : 'relative',
-        height: '100%',
-        width: '100%',
-      }}
-    >
-      <img
-        src={src}
-        alt={alt}
-        {...safeProps}
-        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-      />
-    </div>
+    />
   )
 }
 
